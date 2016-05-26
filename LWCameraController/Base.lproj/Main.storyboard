@@ -31,9 +31,18 @@
                                     <segue destination="9fJ-iC-KmQ" kind="presentation" id="Y3X-m3-nna"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b76-fM-sIx">
+                                <rect key="frame" x="241" y="377" width="119" height="30"/>
+                                <state key="normal" title="VideoDataOutput"/>
+                                <connections>
+                                    <segue destination="ebX-hd-x4n" kind="presentation" id="FVP-82-tWK"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="b76-fM-sIx" firstAttribute="centerX" secondItem="ZfH-CG-SZ2" secondAttribute="centerX" id="1WQ-o3-CAE"/>
+                            <constraint firstItem="b76-fM-sIx" firstAttribute="top" secondItem="ltx-k2-ZHw" secondAttribute="bottom" constant="16" id="1fC-EV-lHF"/>
                             <constraint firstItem="bbT-ek-pbL" firstAttribute="centerY" secondItem="ZfH-CG-SZ2" secondAttribute="centerY" id="55w-P1-QQe"/>
                             <constraint firstItem="bbT-ek-pbL" firstAttribute="centerX" secondItem="ZfH-CG-SZ2" secondAttribute="centerX" id="8fn-qa-wZs"/>
                             <constraint firstItem="ltx-k2-ZHw" firstAttribute="top" secondItem="bbT-ek-pbL" secondAttribute="bottom" constant="16" id="ldv-cA-8pt"/>
@@ -44,7 +53,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="euu-E5-QXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="581" y="1132"/>
+            <point key="canvasLocation" x="709" y="1119"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -163,6 +172,24 @@
             </objects>
             <point key="canvasLocation" x="1457" y="232"/>
         </scene>
+        <!--Video Data Output View Controller-->
+        <scene sceneID="6HC-9R-aOQ">
+            <objects>
+                <viewController id="ebX-hd-x4n" customClass="VideoDataOutputViewController" customModule="LWCameraController" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7fw-k5-2lk"/>
+                        <viewControllerLayoutGuide type="bottom" id="S5e-q9-7xL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="NnP-7r-3LJ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="maU-dT-iDd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1457" y="1591"/>
+        </scene>
         <!--Scan View Controller-->
         <scene sceneID="BNU-uC-6df">
             <objects>
@@ -195,7 +222,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ces-ar-1lJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1457" y="1387"/>
+            <point key="canvasLocation" x="1317" y="915"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ecW-Nb-bE1">
@@ -213,7 +240,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U7J-QO-AF5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="197" y="1176"/>
+            <point key="canvasLocation" x="-27" y="1234"/>
         </scene>
     </scenes>
     <resources>

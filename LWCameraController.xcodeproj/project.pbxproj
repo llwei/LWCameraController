@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		003CB99C1CF43A190008C680 /* LWCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003CB99B1CF43A190008C680 /* LWCameraController.swift */; };
+		0045AD301CF6D20800483895 /* VideoDataOutputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0045AD2F1CF6D20800483895 /* VideoDataOutputViewController.swift */; };
 		0078071B1CF42D4000FC5408 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0078071A1CF42D4000FC5408 /* AppDelegate.swift */; };
 		0078071D1CF42D4000FC5408 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0078071C1CF42D4000FC5408 /* CameraViewController.swift */; };
 		007807201CF42D4000FC5408 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0078071E1CF42D4000FC5408 /* Main.storyboard */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		003CB99B1CF43A190008C680 /* LWCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWCameraController.swift; sourceTree = "<group>"; };
+		0045AD2F1CF6D20800483895 /* VideoDataOutputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDataOutputViewController.swift; sourceTree = "<group>"; };
 		007807171CF42D3F00FC5408 /* LWCameraController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LWCameraController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0078071A1CF42D4000FC5408 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0078071C1CF42D4000FC5408 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				0078071A1CF42D4000FC5408 /* AppDelegate.swift */,
 				0078071C1CF42D4000FC5408 /* CameraViewController.swift */,
 				00A17EDF1CF5AB1100DDA984 /* ScanViewController.swift */,
+				0045AD2F1CF6D20800483895 /* VideoDataOutputViewController.swift */,
 				0078071E1CF42D4000FC5408 /* Main.storyboard */,
 				007807211CF42D4000FC5408 /* Assets.xcassets */,
 				007807231CF42D4000FC5408 /* LaunchScreen.storyboard */,
@@ -152,6 +155,7 @@
 				0078071D1CF42D4000FC5408 /* CameraViewController.swift in Sources */,
 				003CB99C1CF43A190008C680 /* LWCameraController.swift in Sources */,
 				0078071B1CF42D4000FC5408 /* AppDelegate.swift in Sources */,
+				0045AD301CF6D20800483895 /* VideoDataOutputViewController.swift in Sources */,
 				00A17EE01CF5AB1100DDA984 /* ScanViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

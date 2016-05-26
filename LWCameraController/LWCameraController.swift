@@ -8,8 +8,11 @@
 
 import UIKit
 import AVFoundation
+import CoreGraphics
+
 
 private var SessionQueue = "SessionQueue"
+private var VideoDataOutputQueue = "VideoDataOutputQueue"
 private let NotAuthorizedMessage = "\(NSBundle.mainBundle().infoDictionary?["CFBundleDisplayName"]) doesn't have permission to use the camera, please change privacy settings"
 private let ConfigurationFailedMessage = "Unable to capture media"
 private let CancelTitle = "OK"
@@ -17,14 +20,18 @@ private let SettingsTitle = "Settings"
 
 private let FocusAnimateDuration: NSTimeInterval = 0.6
 
+
 typealias StartRecordingHandler = ((captureOutput: AVCaptureFileOutput!, connections: [AnyObject]!) -> Void)
 typealias FinishRecordingHandler = ((captureOutput: AVCaptureFileOutput!, outputFileURL: NSURL!, connections: [AnyObject]!, error: NSError!) -> Void)
 typealias MetaDataOutputHandler = ((captureOutput: AVCaptureOutput!, metadataObjects: [AnyObject]!, connection: AVCaptureConnection!) -> Void)
+typealias VideoDataOutputHandler = ((captureOutput: AVCaptureOutput!, sampleBuffer: CMSampleBuffer!, connection: AVCaptureConnection!) -> Void)
+
 
 
 private enum LWCamType: Int {
     case Default
     case MetaData
+    case VideoData
 }
 
 
@@ -35,12 +42,12 @@ private enum LWCamSetupResult: Int {
 }
 
 
-class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCaptureMetadataOutputObjectsDelegate {
+class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
 
     // MARK:  Properties
     
-    private var previewView: LWPreviewView!
+    private var previewView: LWPreviewView?
     private var focusImageView: UIImageView?
     private var camType: LWCamType = .Default
     
@@ -59,10 +66,12 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     private var audioDeviceInput: AVCaptureDeviceInput?
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var stillImageOutput: AVCaptureStillImageOutput?
+    private var videoDataOutput: AVCaptureVideoDataOutput?
     
     private var startRecordingHandler: StartRecordingHandler?
     private var finishRecordingHandler: FinishRecordingHandler?
     private var metaDataOutputHandler: MetaDataOutputHandler?
+    private var videoDataOutputHandler: VideoDataOutputHandler?
     
     
     // MARK:  Initial
@@ -142,11 +151,14 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                     if self.session.canAddInput(videoDeviceInput) {
                         self.session.addInput(videoDeviceInput)
                         self.videoDeviceInput = videoDeviceInput
-                        // Use the status bar orientation as the initial video orientation.
-                        dispatch_async(dispatch_get_main_queue(), {
-                            let videoPreviewLayer = self.previewView.layer as! AVCaptureVideoPreviewLayer
-                            videoPreviewLayer.connection.videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
-                        })
+                        if let previewView = self.previewView {
+                            // Use the status bar orientation as the initial video orientation.
+                            dispatch_async(dispatch_get_main_queue(), {
+                                let videoPreviewLayer = previewView.layer as! AVCaptureVideoPreviewLayer
+                                videoPreviewLayer.connection.videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
+                            })
+                        }
+                        
                     } else {
                         print("Could not add video device input to the session")
                         self.setupResult = .SessionConfigurationFailed
@@ -192,9 +204,9 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                 let movieFileOutput = AVCaptureMovieFileOutput()
                 if self.session.canAddOutput(movieFileOutput) {
                     self.session.addOutput(movieFileOutput)
+                    let connection = movieFileOutput.connectionWithMediaType(AVMediaTypeVideo)
                     // Setup videoStabilizationMode
                     if #available(iOS 8.0, *) {
-                        let connection = movieFileOutput.connectionWithMediaType(AVMediaTypeVideo)
                         if connection.supportsVideoStabilization {
                             connection.preferredVideoStabilizationMode = .Auto
                         }
@@ -227,6 +239,25 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                     print("Could not add metaData output to the session")
                     self.setupResult = .SessionConfigurationFailed
                 }
+                
+            case .VideoData:
+                // Add videoDataOutput
+                let videoDataOutput = AVCaptureVideoDataOutput()
+                videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey : Int(kCVPixelFormatType_32BGRA)]
+                videoDataOutput.alwaysDiscardsLateVideoFrames = true
+                if self.session.canAddOutput(videoDataOutput) {
+                    self.session.addOutput(videoDataOutput)
+                    videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create(VideoDataOutputQueue, DISPATCH_QUEUE_SERIAL))
+                    self.videoDataOutput = videoDataOutput
+                    
+                    // Use the status bar orientation as the initial video orientation.
+                    let connection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
+                    connection.videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
+                    
+                } else {
+                    print("Could not add videoData output to the session")
+                    self.setupResult = .SessionConfigurationFailed
+                }
             }
             
             self.session.commitConfiguration()
@@ -237,7 +268,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     // MARK:  Target actions
     
     func focusAndExposeTap(sender: UITapGestureRecognizer) {
-        guard tapFocusEnabled else { return }
+        guard tapFocusEnabled, let previewView = previewView else { return }
         
         let layer = previewView.layer as! AVCaptureVideoPreviewLayer
         let devicePoint = layer.captureDevicePointOfInterestForPoint(sender.locationInView(sender.view))
@@ -309,10 +340,21 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
         // Note that the app delegate controls the device orientation notifications required to use the device orientation.
         let deviceOrientation = UIDevice.currentDevice().orientation
         if UIDeviceOrientationIsPortrait(deviceOrientation) || UIDeviceOrientationIsLandscape(deviceOrientation) {
-            let layer = previewView.layer as! AVCaptureVideoPreviewLayer
-            let videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
-            if layer.connection.videoOrientation != videoOrientation {
-                layer.connection.videoOrientation = videoOrientation
+            // Preview
+            if let previewView = previewView {
+                let layer = previewView.layer as! AVCaptureVideoPreviewLayer
+                let videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
+                if layer.connection.videoOrientation != videoOrientation {
+                    layer.connection.videoOrientation = videoOrientation
+                }
+            }
+            // VideoDataOutput
+            if let videoDataOutput = videoDataOutput {
+                let connect = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
+                let videoOrientation = LWCameraController.videoOrientationDependonStatusBarOrientation()
+                if connect.videoOrientation != videoOrientation {
+                    connect.videoOrientation = videoOrientation
+                }
             }
         }
     }
@@ -450,12 +492,18 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
   
     // MARK:  AVCaptureFileOutputRecordingDelegate
     
-    func captureOutput(captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAtURL fileURL: NSURL!, fromConnections connections: [AnyObject]!) {
+    func captureOutput(captureOutput: AVCaptureFileOutput!,
+                       didStartRecordingToOutputFileAtURL fileURL: NSURL!,
+                                                          fromConnections connections: [AnyObject]!) {
+        
         recording = true
         startRecordingHandler?(captureOutput: captureOutput, connections: connections)
     }
     
-    func captureOutput(captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!, fromConnections connections: [AnyObject]!, error: NSError!) {
+    func captureOutput(captureOutput: AVCaptureFileOutput!,
+                       didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
+                                                           fromConnections connections: [AnyObject]!,
+                                                                           error: NSError!) {
         
         if let currentBackgroundRecordingID = backgroundRecordingID {
             backgroundRecordingID = UIBackgroundTaskInvalid
@@ -471,10 +519,23 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     
     // MARK:  AVCaptureMetadataOutputObjectsDelegate
     
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
+    func captureOutput(captureOutput: AVCaptureOutput!,
+                       didOutputMetadataObjects metadataObjects: [AnyObject]!,
+                                                fromConnection connection: AVCaptureConnection!) {
         
         metaDataOutputHandler?(captureOutput: captureOutput, metadataObjects: metadataObjects, connection: connection)
     }
+    
+    
+    // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+    
+    func captureOutput(captureOutput: AVCaptureOutput!,
+                       didOutputSampleBuffer sampleBuffer: CMSampleBuffer!,
+                                             fromConnection connection: AVCaptureConnection!) {
+        
+        videoDataOutputHandler?(captureOutput: captureOutput, sampleBuffer: sampleBuffer, connection: connection)
+    }
+    
     
 }
 
@@ -735,14 +796,14 @@ extension LWCameraController {
 
     
     func snapStillImage(withFlashMode mode: AVCaptureFlashMode, completeHandler: ((imageData: NSData?, error: NSError?) -> Void)?) {
-        guard sessionRunning && !recording else { return }
+        guard sessionRunning && !recording, let previewView = previewView else { return }
         
         dispatch_async(sessionQueue) {
             guard self.setupResult == .Success else { return }
             
             if let connection = self.stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo), device = self.videoDeviceInput?.device {
                 // Update the orientation on the still image output video connection before capturing
-                connection.videoOrientation = (self.previewView.layer as! AVCaptureVideoPreviewLayer).connection.videoOrientation
+                connection.videoOrientation = (previewView.layer as! AVCaptureVideoPreviewLayer).connection.videoOrientation
                 // Flash set to Auto for Still Capture.
                 LWCameraController.setFlashMode(mode, forDevice: device)
                 // Capture a still image.
@@ -759,7 +820,7 @@ extension LWCameraController {
                                                                                         })
                 })
                 dispatch_async(dispatch_get_main_queue(), {
-                    let layer = self.previewView.layer
+                    let layer = previewView.layer
                     layer.opacity = 0.0
                     UIView.animateWithDuration(0.25, animations: {
                         layer.opacity = 1.0
@@ -774,7 +835,7 @@ extension LWCameraController {
     }
     
     func startMovieRecording(outputFilePath path: String, startRecordingHandler: StartRecordingHandler?) {
-        guard sessionRunning && !recording else { return }
+        guard sessionRunning && !recording, let previewView = previewView else { return }
         
         dispatch_async(sessionQueue) {
             guard self.setupResult == .Success, let movieFileOutput = self.movieFileOutput else { return }
@@ -789,7 +850,7 @@ extension LWCameraController {
             }
             // Update the orientation on the movie file output video connection before starting recording.
             let connection = movieFileOutput.connectionWithMediaType(AVMediaTypeVideo)
-            connection.videoOrientation = (self.previewView.layer as! AVCaptureVideoPreviewLayer).connection.videoOrientation
+            connection.videoOrientation = (previewView.layer as! AVCaptureVideoPreviewLayer).connection.videoOrientation
             
             // Turn Off flash for video recording
             if let device = self.videoDeviceInput?.device {
@@ -855,6 +916,69 @@ extension LWCameraController {
 }
 
 
+// MARK: - VideoDataOutput
+
+extension LWCameraController {
+    
+    convenience init(withVideoDataOutputHandler handler: VideoDataOutputHandler) {
+        self.init()
+        
+        self.camType = .VideoData
+        self.audioEnabled = false
+        
+        // Setup the capture session inputs
+        setupCaptureSessionInputs()
+        
+        // Setup the capture session outputs
+        setupCaptureSessionOutputs()
+        
+        self.videoDataOutputHandler = handler
+    }
+    
+    
+    /**
+     Create a UIImage from sample buffer data
+     */
+    class func image(fromSampleBuffer sampleBuffer: CMSampleBufferRef) -> UIImage? {
+        
+        // Get a CMSampleBuffer's Core Video image buffer for the media data
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil}
+        
+        // Lock the base address of the pixel buffer
+        CVPixelBufferLockBaseAddress(imageBuffer, 0)
+        
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+        let width = CVPixelBufferGetWidth(imageBuffer)
+        let height = CVPixelBufferGetHeight(imageBuffer)
+        let bitsPerComponent: Int = 8
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo.ByteOrder32Little.rawValue | CGImageAlphaInfo.PremultipliedFirst.rawValue
+        
+        // Create a bitmap graphics context with the sample buffer data
+        let context = CGBitmapContextCreate(baseAddress,
+                                            width,
+                                            height,
+                                            bitsPerComponent,
+                                            bytesPerRow,
+                                            colorSpace,
+                                            bitmapInfo)
+        
+        // Unlock the pixel buffer
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+        
+        // Create a Quartz image from the pixel data in the bitmap graphics context
+        guard let quartzImage = CGBitmapContextCreateImage(context) else { return nil }
+        
+        // Create an image object from the Quartz image
+        let image = UIImage(CGImage: quartzImage)
+        
+        return image
+    }
+
+    
+}
+
 
 
 // MARK: - ========== LWPreviewView ===========
@@ -877,6 +1001,7 @@ class LWPreviewView: UIView {
         }
     }
 }
+
 
 
 
