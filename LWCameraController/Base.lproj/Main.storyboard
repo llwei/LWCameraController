@@ -18,10 +18,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bbT-ek-pbL">
-                                <rect key="frame" x="277" y="285" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="273" y="285" width="54" height="30"/>
+                                <state key="normal" title="Camera"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="modal" id="0tZ-6l-y2W"/>
+                                    <segue destination="BYZ-38-t0r" kind="presentation" id="0tZ-6l-y2W"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ltx-k2-ZHw">
+                                <rect key="frame" x="252" y="331" width="96" height="30"/>
+                                <state key="normal" title="QRCode Scan"/>
+                                <connections>
+                                    <segue destination="9fJ-iC-KmQ" kind="presentation" id="Y3X-m3-nna"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -29,18 +36,20 @@
                         <constraints>
                             <constraint firstItem="bbT-ek-pbL" firstAttribute="centerY" secondItem="ZfH-CG-SZ2" secondAttribute="centerY" id="55w-P1-QQe"/>
                             <constraint firstItem="bbT-ek-pbL" firstAttribute="centerX" secondItem="ZfH-CG-SZ2" secondAttribute="centerX" id="8fn-qa-wZs"/>
+                            <constraint firstItem="ltx-k2-ZHw" firstAttribute="top" secondItem="bbT-ek-pbL" secondAttribute="bottom" constant="16" id="ldv-cA-8pt"/>
+                            <constraint firstItem="ltx-k2-ZHw" firstAttribute="centerX" secondItem="ZfH-CG-SZ2" secondAttribute="centerX" id="wim-dP-QYa"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="vcF-m2-zoQ"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="euu-E5-QXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1009" y="1176"/>
+            <point key="canvasLocation" x="581" y="1132"/>
         </scene>
-        <!--View Controller-->
+        <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="LWCameraController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="LWCameraController" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -152,7 +161,41 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1167" y="290"/>
+            <point key="canvasLocation" x="1457" y="232"/>
+        </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="BNU-uC-6df">
+            <objects>
+                <viewController id="9fJ-iC-KmQ" customClass="ScanViewController" customModule="LWCameraController" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6Jk-be-NNK"/>
+                        <viewControllerLayoutGuide type="bottom" id="adB-lB-bYc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BMI-15-32h">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FIP-5Q-wse" customClass="LWPreviewView" customModule="LWCameraController" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="FIP-5Q-wse" secondAttribute="trailing" id="1dE-xN-zP5"/>
+                            <constraint firstItem="FIP-5Q-wse" firstAttribute="leading" secondItem="BMI-15-32h" secondAttribute="leading" id="HIw-hg-wm8"/>
+                            <constraint firstItem="FIP-5Q-wse" firstAttribute="top" secondItem="BMI-15-32h" secondAttribute="top" id="RZs-eR-dnY"/>
+                            <constraint firstItem="adB-lB-bYc" firstAttribute="top" secondItem="FIP-5Q-wse" secondAttribute="bottom" id="uvE-0h-6uM"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="preview" destination="FIP-5Q-wse" id="87p-KV-HIa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ces-ar-1lJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1457" y="1387"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ecW-Nb-bE1">

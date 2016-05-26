@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import AssetsLibrary
 
-class ViewController: UIViewController {
+class CameraViewController: UIViewController {
 
     // 显示图像的视图
     @IBOutlet weak var previewView: LWPreviewView!
@@ -67,7 +67,7 @@ class ViewController: UIViewController {
     
     @IBAction func action(sender: UIButton) {
         // 拍照并保存至相册
-        cameraController.snapStillImage(withFalshMode: .Off) { (imageData, error) in
+        cameraController.snapStillImage(withFlashMode: .Off) { (imageData, error) in
             if let data = imageData {
                 if let image = UIImage(data: data) {
                     // Save to Album

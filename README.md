@@ -7,7 +7,7 @@ Deployment Target iOS 7.0
     
 1、初始化并显示捕捉到的画面
 
-    class ViewController: UIViewController {
+    class CameraViewController: UIViewController {
 
         // 显示图像的视图
         @IBOutlet weak var previewView: LWPreviewView!
@@ -53,7 +53,7 @@ Deployment Target iOS 7.0
 
 3、拍照：
     
-    cameraController.snapStillImage(withFalshMode: .Off) { (imageData, error) in
+    cameraController.snapStillImage(withFlashMode: .Off) { (imageData, error) in
         if let data = imageData {
             if let image = UIImage(data: data) {
                 // Save to Album
@@ -131,6 +131,56 @@ Deployment Target iOS 7.0
 
     // 获取当前设备的闪光灯模式
     cameraController.currentFlashMode()
+
+
+二、机器码扫描识别：
+    
+    class ScanViewController: UIViewController {
+
+        @IBOutlet weak var preview: LWPreviewView!
+        var cameraController: LWCameraController!
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+
+            // 初始化一个MetaData输出的控制器，主要用于扫描二维码、条形码等
+            cameraController = LWCameraController(metaDataPreviewView: preview,
+                                                  metadataObjectTypes: [AVMetadataObjectTypeQRCode,
+                                                                        AVMetadataObjectTypeCode128Code,
+                                                                        AVMetadataObjectTypeFace],
+                                                metaDataOutputHandler: {
+                                                    [unowned self] (captureOutput, metadataObjects, connection) in
+
+                                                    if let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject {
+                                                        switch object.type {
+                                                        case AVMetadataObjectTypeQRCode:
+                                                            print("AVMetadataObjectTypeQRCode: \(object.stringValue)")
+                                                            self.cameraController.stopRunning()
+                                                            
+                                                        case AVMetadataObjectTypeCode128Code:
+                                                            print("AVMetadataObjectTypeCode128Code: \(object.stringValue)")
+                                                            self.cameraController.stopRunning()
+
+                                                        default:
+                                                            break
+                                                        }
+                                                    } else if let object = metadataObjects.first as? AVMetadataFaceObject {
+                                                        print("AVMetadataFaceObject:\(object.bounds)")
+                                                    }
+            })
+
+        }
+
+        override func viewWillAppear(animated: Bool) {
+            super.viewWillAppear(animated)
+            cameraController.startRunning()
+        }
+
+        override func viewDidDisappear(animated: Bool) {
+            super.viewDidDisappear(animated)
+            cameraController.stopRunning()
+        }
+    }
 
 
 

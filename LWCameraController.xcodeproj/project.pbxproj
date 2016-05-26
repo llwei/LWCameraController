@@ -9,21 +9,23 @@
 /* Begin PBXBuildFile section */
 		003CB99C1CF43A190008C680 /* LWCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003CB99B1CF43A190008C680 /* LWCameraController.swift */; };
 		0078071B1CF42D4000FC5408 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0078071A1CF42D4000FC5408 /* AppDelegate.swift */; };
-		0078071D1CF42D4000FC5408 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0078071C1CF42D4000FC5408 /* ViewController.swift */; };
+		0078071D1CF42D4000FC5408 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0078071C1CF42D4000FC5408 /* CameraViewController.swift */; };
 		007807201CF42D4000FC5408 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0078071E1CF42D4000FC5408 /* Main.storyboard */; };
 		007807221CF42D4000FC5408 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 007807211CF42D4000FC5408 /* Assets.xcassets */; };
 		007807251CF42D4000FC5408 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 007807231CF42D4000FC5408 /* LaunchScreen.storyboard */; };
+		00A17EE01CF5AB1100DDA984 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A17EDF1CF5AB1100DDA984 /* ScanViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		003CB99B1CF43A190008C680 /* LWCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWCameraController.swift; sourceTree = "<group>"; };
 		007807171CF42D3F00FC5408 /* LWCameraController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LWCameraController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0078071A1CF42D4000FC5408 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0078071C1CF42D4000FC5408 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0078071C1CF42D4000FC5408 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		0078071F1CF42D4000FC5408 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		007807211CF42D4000FC5408 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		007807241CF42D4000FC5408 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		007807261CF42D4000FC5408 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00A17EDF1CF5AB1100DDA984 /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +68,8 @@
 			children = (
 				003CB99A1CF439FF0008C680 /* Class */,
 				0078071A1CF42D4000FC5408 /* AppDelegate.swift */,
-				0078071C1CF42D4000FC5408 /* ViewController.swift */,
+				0078071C1CF42D4000FC5408 /* CameraViewController.swift */,
+				00A17EDF1CF5AB1100DDA984 /* ScanViewController.swift */,
 				0078071E1CF42D4000FC5408 /* Main.storyboard */,
 				007807211CF42D4000FC5408 /* Assets.xcassets */,
 				007807231CF42D4000FC5408 /* LaunchScreen.storyboard */,
@@ -146,9 +149,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0078071D1CF42D4000FC5408 /* ViewController.swift in Sources */,
+				0078071D1CF42D4000FC5408 /* CameraViewController.swift in Sources */,
 				003CB99C1CF43A190008C680 /* LWCameraController.swift in Sources */,
 				0078071B1CF42D4000FC5408 /* AppDelegate.swift in Sources */,
+				00A17EE01CF5AB1100DDA984 /* ScanViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
