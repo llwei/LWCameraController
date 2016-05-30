@@ -13,7 +13,7 @@ import AssetsLibrary
 class CameraViewController: UIViewController {
 
     // 显示图像的视图
-    @IBOutlet weak var previewView: LWPreviewView!
+    @IBOutlet weak var previewView: LWVideoPreview!
     // 聚焦图片
     @IBOutlet weak var focusImgView: UIImageView!
     // 相机管理器

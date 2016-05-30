@@ -47,7 +47,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
 
     // MARK:  Properties
     
-    private var previewView: LWPreviewView?
+    private var previewView: LWVideoPreview?
     private var focusImageView: UIImageView?
     private var camType: LWCamType = .Default
     
@@ -118,7 +118,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     }
     
     // Setup the previewView and focusImageView
-    private func setupPreviewView(previewView: LWPreviewView, focusImageView: UIImageView?) {
+    private func setupPreviewView(previewView: LWVideoPreview, focusImageView: UIImageView?) {
         
         // Preview View
         self.previewView = previewView
@@ -548,7 +548,9 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
 
 extension LWCameraController {
     
-    
+    /**
+     开始捕捉画面
+     */
     func startRunning() {
         guard !sessionRunning else { return }
         
@@ -572,6 +574,9 @@ extension LWCameraController {
         }
     }
     
+    /**
+     结束画面的捕捉
+     */
     func stopRunning() {
         guard sessionRunning else { return }
         
@@ -596,6 +601,11 @@ extension LWCameraController {
         return videoDeviceInput?.device.position ?? .Unspecified
     }
     
+    /**
+     切换摄像头
+     
+     - parameter position: 要切换到的摄像头位置
+     */
     func toggleCamera(position: AVCaptureDevicePosition) {
         guard !recording else {
             print("The session is recording, can not complete the operation!")
@@ -728,7 +738,7 @@ extension LWCameraController {
      - parameter audioEnabled:   录像时是否具有录音功能
      
      */
-    convenience init(previewView view: LWPreviewView, focusImageView: UIImageView?, audioEnabled: Bool) {
+    convenience init(previewView view: LWVideoPreview, focusImageView: UIImageView?, audioEnabled: Bool) {
         self.init()
         
         self.camType = .Default
@@ -744,6 +754,9 @@ extension LWCameraController {
         setupCaptureSessionOutputs()
     }
     
+    /**
+     设置录像是否具有录音功能，默认值: 参考初始化传入的参数audioEnabled（录像期间使用无效）
+     */
     func setAudioEnabled(enabled: Bool) {
         guard !recording else {
             print("The session is recording, can not complete the operation!")
@@ -789,12 +802,20 @@ extension LWCameraController {
         }
     }
     
-    
+    /**
+     设置点击聚焦手势的开关，默认为true
+     */
     func setTapToFocusEnabled(enabled: Bool) {
         tapFocusEnabled = enabled
     }
 
     
+    /**
+     拍照
+     
+     - parameter mode:            设置拍照时闪光灯模式
+     - parameter completeHandler: 拍照结果回调
+     */
     func snapStillImage(withFlashMode mode: AVCaptureFlashMode, completeHandler: ((imageData: NSData?, error: NSError?) -> Void)?) {
         guard sessionRunning && !recording, let previewView = previewView else { return }
         
@@ -830,10 +851,19 @@ extension LWCameraController {
         }
     }
     
+    /**
+     判断当前是否正在录像
+     */
     func isRecording() -> Bool {
         return recording
     }
     
+    /**
+     开始录像
+     
+     - parameter path:                  录像文件保存地址
+     - parameter startRecordingHandler: 开始录像时触发的回调
+     */
     func startMovieRecording(outputFilePath path: String, startRecordingHandler: StartRecordingHandler?) {
         guard sessionRunning && !recording, let previewView = previewView else { return }
         
@@ -864,7 +894,11 @@ extension LWCameraController {
         }
     }
     
-    
+    /**
+     结束录像
+     
+     - parameter finishRecordingHandler: 结束录像时触发的回调
+     */
     func stopMovieRecording(finishRecordingHandler: FinishRecordingHandler?) {
         guard sessionRunning && recording else { return }
         
@@ -894,7 +928,7 @@ extension LWCameraController {
      - parameter metaDataOutputHandler: 扫描到数据时的回调
      
      */
-    convenience init(metaDataPreviewView view: LWPreviewView, metadataObjectTypes: [AnyObject], metaDataOutputHandler: MetaDataOutputHandler?) {
+    convenience init(metaDataPreviewView view: LWVideoPreview, metadataObjectTypes: [AnyObject], metaDataOutputHandler: MetaDataOutputHandler?) {
         self.init()
         
         self.camType = .MetaData
@@ -981,9 +1015,10 @@ extension LWCameraController {
 
 
 
-// MARK: - ========== LWPreviewView ===========
+// MARK: - ========== LWVideoPreview ===========
 
-class LWPreviewView: UIView {
+// 用来显示session捕捉到的画面
+class LWVideoPreview: UIView {
     
     override class func layerClass() -> AnyClass {
         return AVCaptureVideoPreviewLayer.self

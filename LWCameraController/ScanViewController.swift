@@ -11,7 +11,7 @@ import AVFoundation
 
 class ScanViewController: UIViewController {
     
-    @IBOutlet weak var preview: LWPreviewView!
+    @IBOutlet weak var preview: LWVideoPreview!
     var cameraController: LWCameraController!
     
     override func viewDidLoad() {
