@@ -5,6 +5,7 @@
 //  Created by lailingwei on 16/5/24.
 //  Copyright © 2016年 lailingwei. All rights reserved.
 //
+//  Github: https://github.com/llwei/LWCameraController
 
 import UIKit
 import AVFoundation
