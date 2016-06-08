@@ -197,12 +197,12 @@ Deployment Target iOS 7.0
             
                 // 对拿回的视频 sampleBuffer 进行处理
                 if let _ = videoCaptureOutput {
-                     let image = LWCameraController.image(fromSampleBuffer: sampleBuffer)
+                    let image = LWCameraController.image(fromSampleBuffer: sampleBuffer)
                 
-                     dispatch_async(dispatch_get_main_queue(), {
-                          self.view.layer.contents = image?.CGImage
-                        })
-                 }
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.view.layer.contents = image?.CGImage
+                    })
+                }
             })
         }
 
