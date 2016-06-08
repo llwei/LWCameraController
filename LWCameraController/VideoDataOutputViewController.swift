@@ -18,15 +18,18 @@ class VideoDataOutputViewController: UIViewController {
         super.viewDidLoad()
 
         cameraController = LWCameraController(withVideoDataOutputHandler: {
-            [unowned self] (captureOutput, sampleBuffer, connection) in
+            [unowned self] (videoCaptureOutput, audioCaptureOutput, sampleBuffer, connection) in
             
-            // 对拿回的 sampleBuffer 进行处理
-            let image = LWCameraController.image(fromSampleBuffer: sampleBuffer)
-   
-            dispatch_async(dispatch_get_main_queue(), {
-                self.view.layer.contents = image?.CGImage
-            })
+            // 对拿回的视频 sampleBuffer 进行处理
+            if let _ = videoCaptureOutput {
+                let image = LWCameraController.image(fromSampleBuffer: sampleBuffer)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.view.layer.contents = image?.CGImage
+                })
+            }
         })
+
       
     }
 

@@ -14,6 +14,7 @@ import CoreGraphics
 
 private var SessionQueue = "SessionQueue"
 private var VideoDataOutputQueue = "VideoDataOutputQueue"
+private var AudioDataOutputQueue = "AudioDataOutputQueue"
 private let NotAuthorizedMessage = "\(NSBundle.mainBundle().infoDictionary?["CFBundleDisplayName"]) doesn't have permission to use the camera, please change privacy settings"
 private let ConfigurationFailedMessage = "Unable to capture media"
 private let CancelTitle = "OK"
@@ -25,7 +26,7 @@ private let FocusAnimateDuration: NSTimeInterval = 0.6
 typealias StartRecordingHandler = ((captureOutput: AVCaptureFileOutput!, connections: [AnyObject]!) -> Void)
 typealias FinishRecordingHandler = ((captureOutput: AVCaptureFileOutput!, outputFileURL: NSURL!, connections: [AnyObject]!, error: NSError!) -> Void)
 typealias MetaDataOutputHandler = ((captureOutput: AVCaptureOutput!, metadataObjects: [AnyObject]!, connection: AVCaptureConnection!) -> Void)
-typealias VideoDataOutputHandler = ((captureOutput: AVCaptureOutput!, sampleBuffer: CMSampleBuffer!, connection: AVCaptureConnection!) -> Void)
+typealias VideoDataOutputHandler = ((videoCaptureOutput: AVCaptureOutput?, audioCaptureOutput: AVCaptureOutput?, sampleBuffer: CMSampleBuffer!, connection: AVCaptureConnection!) -> Void)
 
 
 
@@ -43,7 +44,7 @@ private enum LWCamSetupResult: Int {
 }
 
 
-class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
+class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
 
     // MARK:  Properties
@@ -68,6 +69,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var stillImageOutput: AVCaptureStillImageOutput?
     private var videoDataOutput: AVCaptureVideoDataOutput?
+    private var audioDataOutput: AVCaptureAudioDataOutput?
     
     private var startRecordingHandler: StartRecordingHandler?
     private var finishRecordingHandler: FinishRecordingHandler?
@@ -126,7 +128,8 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
         previewView.backgroundColor = UIColor.blackColor()
         previewView.session = session
         // Add Tap gesture
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LWCameraController.focusAndExposeTap(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: #selector(LWCameraController.focusAndExposeTap(_:)))
         previewView.addGestureRecognizer(tapGesture)
         
         // FocusImageView
@@ -259,6 +262,19 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                     print("Could not add videoData output to the session")
                     self.setupResult = .SessionConfigurationFailed
                 }
+                
+                // Add audioDataOutput
+                let audioDataOutput = AVCaptureAudioDataOutput()
+                if self.session.canAddOutput(audioDataOutput) {
+                    self.session.addOutput(audioDataOutput)
+                    audioDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create(AudioDataOutputQueue, DISPATCH_QUEUE_SERIAL))
+                    self.audioDataOutput = audioDataOutput
+                    
+                } else {
+                    print("Could not add audioData output to the session")
+                    self.setupResult = .SessionConfigurationFailed
+                }
+                
             }
             
             self.session.commitConfiguration()
@@ -514,7 +530,10 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
         }
         
         recording = false
-        finishRecordingHandler?(captureOutput: captureOutput, outputFileURL: outputFileURL, connections: connections, error: error)
+        finishRecordingHandler?(captureOutput: captureOutput,
+                                outputFileURL: outputFileURL,
+                                connections: connections,
+                                error: error)
     }
 
     
@@ -524,17 +543,31 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                        didOutputMetadataObjects metadataObjects: [AnyObject]!,
                                                 fromConnection connection: AVCaptureConnection!) {
         
-        metaDataOutputHandler?(captureOutput: captureOutput, metadataObjects: metadataObjects, connection: connection)
+        metaDataOutputHandler?(captureOutput: captureOutput,
+                               metadataObjects: metadataObjects,
+                               connection: connection)
     }
     
     
-    // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+    // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate / AVCaptureAudioDataOutputSampleBufferDelegate
     
     func captureOutput(captureOutput: AVCaptureOutput!,
                        didOutputSampleBuffer sampleBuffer: CMSampleBuffer!,
                                              fromConnection connection: AVCaptureConnection!) {
         
-        videoDataOutputHandler?(captureOutput: captureOutput, sampleBuffer: sampleBuffer, connection: connection)
+        if captureOutput == videoDataOutput {
+            videoDataOutputHandler?(videoCaptureOutput: captureOutput,
+                                    audioCaptureOutput: nil,
+                                    sampleBuffer: sampleBuffer,
+                                    connection: connection)
+            
+        } else if captureOutput == audioDataOutput {
+            videoDataOutputHandler?(videoCaptureOutput: nil,
+                                    audioCaptureOutput: captureOutput,
+                                    sampleBuffer: sampleBuffer,
+                                    connection: connection)
+        }
+        
     }
     
     
@@ -739,7 +772,9 @@ extension LWCameraController {
      - parameter audioEnabled:   录像时是否具有录音功能
      
      */
-    convenience init(previewView view: LWVideoPreview, focusImageView: UIImageView?, audioEnabled: Bool) {
+    convenience init(previewView view: LWVideoPreview,
+                                 focusImageView: UIImageView?,
+                                 audioEnabled: Bool) {
         self.init()
         
         self.camType = .Default
@@ -817,7 +852,9 @@ extension LWCameraController {
      - parameter mode:            设置拍照时闪光灯模式
      - parameter completeHandler: 拍照结果回调
      */
-    func snapStillImage(withFlashMode mode: AVCaptureFlashMode, completeHandler: ((imageData: NSData?, error: NSError?) -> Void)?) {
+    func snapStillImage(withFlashMode mode: AVCaptureFlashMode,
+                                      completeHandler: ((imageData: NSData?, error: NSError?) -> Void)?) {
+        
         guard sessionRunning && !recording, let previewView = previewView else { return }
         
         dispatch_async(sessionQueue) {
@@ -865,7 +902,9 @@ extension LWCameraController {
      - parameter path:                  录像文件保存地址
      - parameter startRecordingHandler: 开始录像时触发的回调
      */
-    func startMovieRecording(outputFilePath path: String, startRecordingHandler: StartRecordingHandler?) {
+    func startMovieRecording(outputFilePath path: String,
+                                            startRecordingHandler: StartRecordingHandler?) {
+        
         guard sessionRunning && !recording, let previewView = previewView else { return }
         
         dispatch_async(sessionQueue) {
@@ -929,7 +968,9 @@ extension LWCameraController {
      - parameter metaDataOutputHandler: 扫描到数据时的回调
      
      */
-    convenience init(metaDataPreviewView view: LWVideoPreview, metadataObjectTypes: [AnyObject], metaDataOutputHandler: MetaDataOutputHandler?) {
+    convenience init(metaDataPreviewView view: LWVideoPreview,
+                                         metadataObjectTypes: [AnyObject],
+                                         metaDataOutputHandler: MetaDataOutputHandler?) {
         self.init()
         
         self.camType = .MetaData
@@ -959,7 +1000,7 @@ extension LWCameraController {
         self.init()
         
         self.camType = .VideoData
-        self.audioEnabled = false
+        self.audioEnabled = true
         
         // Setup the capture session inputs
         setupCaptureSessionInputs()
