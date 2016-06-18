@@ -10,7 +10,7 @@
 import UIKit
 import AVFoundation
 import CoreGraphics
-
+import CoreImage
 
 private var SessionQueue = "SessionQueue"
 private var VideoDataOutputQueue = "VideoDataOutputQueue"
@@ -1050,6 +1050,20 @@ extension LWCameraController {
         let image = UIImage(CGImage: quartzImage)
         
         return image
+    }
+    
+    
+    class func cgImage(fromSampleBuffer sampleBuffer: CMSampleBufferRef,
+                                        filter: CIFilter,
+                                        context: CIContext) -> CGImage? {
+        
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+        
+        let inputImage = CIImage(CVPixelBuffer: imageBuffer)
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        let output = filter.outputImage!
+        
+        return context.createCGImage(output, fromRect: inputImage.extent)
     }
 
     

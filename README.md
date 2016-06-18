@@ -204,6 +204,27 @@ Deployment Target iOS 7.0
                     })
                 }
             })
+
+        /*
+            let filter = CIFilter(name: "CIPhotoEffectChrome")!
+            let context = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
+
+            cameraController = LWCameraController(withVideoDataOutputHandler: {
+                [unowned self] (videoCaptureOutput, audioCaptureOutput, sampleBuffer, connection) in
+
+                // 对拿回的视频 sampleBuffer 进行实时滤镜处理
+                if let _ = videoCaptureOutput {
+                    let cgImage = LWCameraController.cgImage(fromSampleBuffer: sampleBuffer,
+                        filter: filter,
+                        context: context)
+
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.view.layer.contents = cgImage
+                    })
+                }
+            })
+        */
+
         }
 
         override func viewWillAppear(animated: Bool) {
