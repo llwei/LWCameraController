@@ -113,6 +113,7 @@
 				TargetAttributes = {
 					007807161CF42D3F00FC5408 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 4Q96HE7EKH;
 					};
 				};
 			};
@@ -269,12 +270,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = LWCameraController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.csym.LWCameraController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cef0d999-5447-4dff-aebb-16f7cdaa27e3";
+				PROVISIONING_PROFILE = "4acb5e11-a1fe-44c8-b76d-f95342935a80";
 			};
 			name = Debug;
 		};
@@ -282,12 +284,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = LWCameraController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.csym.LWCameraController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cef0d999-5447-4dff-aebb-16f7cdaa27e3";
+				PROVISIONING_PROFILE = "4acb5e11-a1fe-44c8-b76d-f95342935a80";
 			};
 			name = Release;
 		};

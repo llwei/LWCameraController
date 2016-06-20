@@ -214,13 +214,11 @@ Deployment Target iOS 7.0
 
                 // 对拿回的视频 sampleBuffer 进行实时滤镜处理
                 if let _ = videoCaptureOutput {
-                    let cgImage = LWCameraController.cgImage(fromSampleBuffer: sampleBuffer,
-                        filter: filter,
-                        context: context)
-
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.view.layer.contents = cgImage
-                    })
+                    if let ciImage = LWCameraController.ciImage(fromSampleBuffer: sampleBuffer, filter: filter) {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.view.layer.contents = self.context.createCGImage(ciImage, fromRect: ciImage.extent)
+                        })
+                    }
                 }
             })
         */

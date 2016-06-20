@@ -34,11 +34,11 @@ class CameraViewController: UIViewController {
         cameraController.startRunning()
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        // 结束捕捉视图
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         cameraController.stopRunning()
     }
+
 
     deinit {
         print("ViewController.deinit")

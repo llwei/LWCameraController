@@ -68,6 +68,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     private var audioDeviceInput: AVCaptureDeviceInput?
     private var movieFileOutput: AVCaptureMovieFileOutput?
     private var stillImageOutput: AVCaptureStillImageOutput?
+    private var metaDataOutput: AVCaptureMetadataOutput?
     private var videoDataOutput: AVCaptureVideoDataOutput?
     private var audioDataOutput: AVCaptureAudioDataOutput?
     
@@ -96,7 +97,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
     }
     
     deinit {
-        print("NSStringFromClass(LWCameraController.self).deinit")
+        print("\(NSStringFromClass(LWCameraController.self)) deinit")
     }
     
     
@@ -239,6 +240,7 @@ class LWCameraController: NSObject, AVCaptureFileOutputRecordingDelegate, AVCapt
                     self.session.addOutput(metaDataOutput)
                     metaDataOutput.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
                     metaDataOutput.metadataObjectTypes = self.metadataObjectTypes
+                    self.metaDataOutput = metaDataOutput
                 } else {
                     print("Could not add metaData output to the session")
                     self.setupResult = .SessionConfigurationFailed
@@ -1053,17 +1055,15 @@ extension LWCameraController {
     }
     
     
-    class func cgImage(fromSampleBuffer sampleBuffer: CMSampleBufferRef,
-                                        filter: CIFilter,
-                                        context: CIContext) -> CGImage? {
+    class func ciImage(fromSampleBuffer sampleBuffer: CMSampleBufferRef,
+                                        filter: CIFilter) -> CIImage? {
         
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
         
         let inputImage = CIImage(CVPixelBuffer: imageBuffer)
         filter.setValue(inputImage, forKey: kCIInputImageKey)
-        let output = filter.outputImage!
         
-        return context.createCGImage(output, fromRect: inputImage.extent)
+        return filter.outputImage
     }
 
     

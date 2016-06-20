@@ -14,28 +14,28 @@
                         <viewControllerLayoutGuide type="bottom" id="ZUF-vV-Rcu"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ZfH-CG-SZ2">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bbT-ek-pbL">
-                                <rect key="frame" x="273" y="285" width="54" height="30"/>
+                                <rect key="frame" x="133" y="269" width="54" height="30"/>
                                 <state key="normal" title="Camera"/>
                                 <connections>
                                     <segue destination="BYZ-38-t0r" kind="presentation" id="0tZ-6l-y2W"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ltx-k2-ZHw">
-                                <rect key="frame" x="252" y="331" width="96" height="30"/>
+                                <rect key="frame" x="112" y="315" width="96" height="30"/>
                                 <state key="normal" title="QRCode Scan"/>
                                 <connections>
-                                    <segue destination="9fJ-iC-KmQ" kind="presentation" id="Y3X-m3-nna"/>
+                                    <segue destination="9fJ-iC-KmQ" kind="show" id="Y3X-m3-nna"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b76-fM-sIx">
-                                <rect key="frame" x="241" y="377" width="119" height="30"/>
+                                <rect key="frame" x="101" y="361" width="119" height="30"/>
                                 <state key="normal" title="VideoDataOutput"/>
                                 <connections>
-                                    <segue destination="ebX-hd-x4n" kind="presentation" id="FVP-82-tWK"/>
+                                    <segue destination="ebX-hd-x4n" kind="show" id="DQJ-Eb-OiY"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -64,14 +64,14 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8L-9i-yyQ" customClass="LWVideoPreview" customModule="LWCameraController" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="600" height="470"/>
+                                <rect key="frame" x="0.0" y="50" width="320" height="438"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera_focus_red" translatesAutoresizingMaskIntoConstraints="NO" id="fpz-iJ-BeB">
-                                        <rect key="frame" x="255" y="190" width="90" height="90"/>
+                                        <rect key="frame" x="115" y="174" width="90" height="90"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="90" id="7wW-D2-TNk"/>
                                             <constraint firstAttribute="width" constant="90" id="cj1-v1-B1M"/>
@@ -85,7 +85,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ifl-f9-mVY">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="50"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2vH-dD-Lk9">
                                         <rect key="frame" x="8" y="12" width="30" height="30"/>
@@ -99,7 +99,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q7x-D5-SMB">
-                                        <rect key="frame" x="562" y="12" width="30" height="30"/>
+                                        <rect key="frame" x="282" y="12" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="aNS-cu-giJ"/>
                                             <constraint firstAttribute="width" constant="30" id="xR2-km-FvI"/>
@@ -120,13 +120,13 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b4R-vR-MWx">
-                                <rect key="frame" x="0.0" y="520" width="600" height="80"/>
+                                <rect key="frame" x="0.0" y="488" width="320" height="80"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="btn_tabBar_bg" translatesAutoresizingMaskIntoConstraints="NO" id="k05-FX-PcV">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="80"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YP8-15-w7u">
-                                        <rect key="frame" x="270" y="10" width="60" height="60"/>
+                                        <rect key="frame" x="130" y="10" width="60" height="60"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="alj-k1-fzp"/>
                                             <constraint firstAttribute="width" constant="60" id="pnw-D8-xvN"/>
@@ -181,14 +181,35 @@
                         <viewControllerLayoutGuide type="bottom" id="S5e-q9-7xL"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="NnP-7r-3LJ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTe-uW-MrT">
+                                <rect key="frame" x="117" y="518" width="87" height="30"/>
+                                <state key="normal" title="Start Record"/>
+                                <state key="selected" title="Stop Record"/>
+                                <connections>
+                                    <action selector="toggleRecordAction:" destination="ebX-hd-x4n" eventType="touchUpInside" id="nQp-1A-VmB"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bTe-uW-MrT" firstAttribute="centerX" secondItem="NnP-7r-3LJ" secondAttribute="centerX" id="TEa-Z4-1ZG"/>
+                            <constraint firstItem="S5e-q9-7xL" firstAttribute="top" secondItem="bTe-uW-MrT" secondAttribute="bottom" constant="20" id="oNP-2b-OSl"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="clX-Ya-OqY">
+                        <barButtonItem key="rightBarButtonItem" title="Filter" id="qOH-rI-MxF">
+                            <connections>
+                                <action selector="chnageFilter:" destination="ebX-hd-x4n" id="m0S-hr-ie0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="maU-dT-iDd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1457" y="1591"/>
+            <point key="canvasLocation" x="1317" y="1561"/>
         </scene>
         <!--Scan View Controller-->
         <scene sceneID="BNU-uC-6df">
@@ -229,6 +250,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="iyL-va-IOP" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="scp-80-dyf">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
