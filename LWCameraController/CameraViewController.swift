@@ -28,13 +28,13 @@ class CameraViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // 开始捕捉视图
         cameraController.startRunning()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         cameraController.stopRunning()
     }
@@ -47,68 +47,68 @@ class CameraViewController: UIViewController {
     // MARK: - Target actions
     
     
-    @IBAction func toggleCameraPosition(sender: UIButton) {
+    @IBAction func toggleCameraPosition(_ sender: UIButton) {
         // 切换摄像头
         switch cameraController.currentCameraPosition() {
-        case .Back:
-            cameraController.toggleCamera(.Front)
-        case .Front:
-            cameraController.toggleCamera(.Back)
+        case .back:
+            cameraController.toggleCamera(.front)
+        case .front:
+            cameraController.toggleCamera(.back)
         default:
-            cameraController.toggleCamera(.Back)
+            cameraController.toggleCamera(.back)
         }
     }
 
-    @IBAction func toggleTorchMode(sender: UIButton) {
+    @IBAction func toggleTorchMode(_ sender: UIButton) {
         // 设置手电筒开关
         let torchMode = cameraController.currentTorchMode()
-        cameraController.setTorchMode(torchMode == .On ? .Off : .On)
+        cameraController.setTorchMode(torchMode == .on ? .off : .on)
     }
     
-    @IBAction func action(sender: UIButton) {
+    @IBAction func action(_ sender: UIButton) {
         // 拍照并保存至相册
-        cameraController.snapStillImage(withFlashMode: .Off) { (imageData, error) in
+        cameraController.snapStillImage(withFlashMode: .off) { (imageData, error) in
             if let data = imageData {
-                if let image = UIImage(data: data) {
+                if let image = UIImage(data: data as Data) {
                     // Save to Album
                     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismiss(animated: true, completion: nil)
                 }
             } else {
                 print(error?.localizedDescription)
             }
         }
         
-//        // 录像并保存至相册
-//        if cameraController.isRecording() {
-//            cameraController.stopMovieRecording({
-//                [unowned self] (captureOutput, outputFileURL, connections, error) in
-//                
-//                print("end recording: \(outputFileURL)")
-//                // Save to Album
-//                let assetsLibrary = ALAssetsLibrary()
-//                assetsLibrary.writeVideoAtPathToSavedPhotosAlbum(outputFileURL, completionBlock: { (assetURL: NSURL!, error: NSError!) -> Void in
-//                    if error != nil {
-//                        print("视频保存出错：\(error)")
-//                    } else {
-//                        print("视频保存成功")
-//                    }
-//                    do {
-//                        try NSFileManager.defaultManager().removeItemAtURL(outputFileURL)
-//                        self.dismissViewControllerAnimated(true, completion: nil)
-//                    } catch {
-//                        let nserror = error as NSError
-//                        print(nserror.localizedDescription)
-//                    }
-//                })
-//            })
-//            
-//        } else {
-//            let tmpFilePath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent("myMovie.mov")
-//            cameraController.startMovieRecording(outputFilePath: tmpFilePath, startRecordingHandler: { (captureOutput, connections) in
-//                print("start recording")
-//            })
-//        }
+        // 录像并保存至相册
+        if cameraController.isRecording() {
+            cameraController.stopMovieRecording({
+                [unowned self] (captureOutput, outputFileURL, connections, error) in
+                
+                print("end recording: \(outputFileURL)")
+                // Save to Album
+                let assetsLibrary = ALAssetsLibrary()
+                assetsLibrary.writeVideoAtPath(toSavedPhotosAlbum: outputFileURL, completionBlock: { (assertURL: URL?, error: Error?) in
+                    if error != nil {
+                        print("视频保存出错：\(error)")
+                    } else {
+                        print("视频保存成功")
+                    }
+                    do {
+                        try FileManager.default.removeItem(at: outputFileURL)
+                        self.dismiss(animated: true, completion: nil)
+                    } catch {
+                        let nserror = error as NSError
+                        print(nserror.localizedDescription)
+                    }
+                })
+            })
+            
+        } else {
+            let tmpFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent("myMovie.mov")
+            cameraController.startMovieRecording(outputFilePath: tmpFilePath, startRecordingHandler: { (captureOutput, connections) in
+                print("start recording")
+            })
+        }
     }
     
     

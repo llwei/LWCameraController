@@ -114,6 +114,7 @@
 					007807161CF42D3F00FC5408 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 4Q96HE7EKH;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -277,6 +278,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.csym.LWCameraController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "4acb5e11-a1fe-44c8-b76d-f95342935a80";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -291,6 +293,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.csym.LWCameraController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "4acb5e11-a1fe-44c8-b76d-f95342935a80";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

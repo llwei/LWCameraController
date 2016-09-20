@@ -18,9 +18,9 @@ class ScanViewController: UIViewController {
         super.viewDidLoad()
         
         cameraController = LWCameraController(metaDataPreviewView: preview,
-                                              metadataObjectTypes: [AVMetadataObjectTypeQRCode,
-                                                                    AVMetadataObjectTypeCode128Code,
-                                                                    AVMetadataObjectTypeFace],
+                                              metadataObjectTypes: [AVMetadataObjectTypeQRCode as AnyObject,
+                                                                    AVMetadataObjectTypeCode128Code as AnyObject,
+                                                                    AVMetadataObjectTypeFace as AnyObject],
                                               metaDataOutputHandler: {
                                                 [unowned self] (captureOutput, metadataObjects, connection) in
                                                 
@@ -29,11 +29,11 @@ class ScanViewController: UIViewController {
                                                     case AVMetadataObjectTypeQRCode:
                                                         print("AVMetadataObjectTypeQRCode: \(object.stringValue)")
                                                         self.cameraController.stopRunning()
-                                                        self.dismissViewControllerAnimated(true, completion: nil)
+                                                        self.dismiss(animated: true, completion: nil)
                                                     case AVMetadataObjectTypeCode128Code:
                                                         print("AVMetadataObjectTypeCode128Code: \(object.stringValue)")
                                                         self.cameraController.stopRunning()
-                                                        self.dismissViewControllerAnimated(true, completion: nil)
+                                                        self.dismiss(animated: true, completion: nil)
                                                     default:
                                                         break
                                                     }
@@ -44,12 +44,12 @@ class ScanViewController: UIViewController {
 
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         cameraController.startRunning()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         cameraController.stopRunning()
     }
@@ -59,9 +59,9 @@ class ScanViewController: UIViewController {
     }
 
     
-    @IBAction func dismiss(sender: UIButton) {
+    @IBAction func dismiss(_ sender: UIButton) {
         
-        dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 
 }
