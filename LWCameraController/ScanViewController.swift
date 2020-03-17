@@ -18,19 +18,19 @@ class ScanViewController: UIViewController {
         super.viewDidLoad()
         
         cameraController = LWCameraController(metaDataPreviewView: preview,
-                                              metadataObjectTypes: [AVMetadataObjectTypeQRCode as AnyObject,
-                                                                    AVMetadataObjectTypeCode128Code as AnyObject,
-                                                                    AVMetadataObjectTypeFace as AnyObject],
+                                              metadataObjectTypes: [AVMetadataObject.ObjectType.qr,
+                                                                    AVMetadataObject.ObjectType.code128,
+                                                                    AVMetadataObject.ObjectType.face],
                                               metaDataOutputHandler: {
                                                 [unowned self] (captureOutput, metadataObjects, connection) in
                                                 
                                                 if let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject {
                                                     switch object.type {
-                                                    case AVMetadataObjectTypeQRCode:
+                                                    case AVMetadataObject.ObjectType.qr:
                                                         print("AVMetadataObjectTypeQRCode: \(object.stringValue)")
                                                         self.cameraController.stopRunning()
                                                         self.dismiss(animated: true, completion: nil)
-                                                    case AVMetadataObjectTypeCode128Code:
+                                                    case AVMetadataObject.ObjectType.code128:
                                                         print("AVMetadataObjectTypeCode128Code: \(object.stringValue)")
                                                         self.cameraController.stopRunning()
                                                         self.dismiss(animated: true, completion: nil)

@@ -20,7 +20,7 @@ class VideoDataOutputViewController: UIViewController {
                                "CIPhotoEffectTonal"]
     
     fileprivate var filter: CIFilter?
-    fileprivate let context = CIContext(eaglContext: EAGLContext(api: .openGLES2))
+    fileprivate let context = CIContext(eaglContext: EAGLContext(api: .openGLES2)!)
     
     // MARK: - Life cycle
     
@@ -177,7 +177,7 @@ class VideoDataOutputViewController: UIViewController {
         
         // AVAssetWriter
         do {
-            assetWriter = try AVAssetWriter(outputURL: URL(fileURLWithPath: self.savePath), fileType: AVFileTypeQuickTimeMovie)
+            assetWriter = try AVAssetWriter(outputURL: URL(fileURLWithPath: self.savePath), fileType: AVFileType.mov)
         } catch {}
         
         
@@ -185,7 +185,7 @@ class VideoDataOutputViewController: UIViewController {
         let settings: [String : AnyObject] = [AVVideoCodecKey : AVVideoCodecH264 as AnyObject,
                                               AVVideoWidthKey : Int(self.videoDimensions.width) as AnyObject,
                                               AVVideoHeightKey: Int(self.videoDimensions.height) as AnyObject]
-        videoWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: settings)
+        videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: settings)
         videoWriterInput.expectsMediaDataInRealTime = true
         assetWriter?.add(videoWriterInput)
         
@@ -202,7 +202,7 @@ class VideoDataOutputViewController: UIViewController {
         let audioSettings: [String : AnyObject] = [AVFormatIDKey : Int(kAudioFormatMPEG4AAC) as AnyObject,
                                                    AVSampleRateKey : 44100 as AnyObject,
                                                    AVNumberOfChannelsKey : 1 as AnyObject]
-        audioWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
+        audioWriterInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioSettings)
         audioWriterInput.expectsMediaDataInRealTime = true
         assetWriter?.add(audioWriterInput)
         
